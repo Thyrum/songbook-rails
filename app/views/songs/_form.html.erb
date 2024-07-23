@@ -1,0 +1,37 @@
+<%= form_with model: song do |form| %>
+  <div>
+    <%=  form.label :title %><br>
+    <%= form.text_field :title %>
+    <% song.errors.full_messages_for(:title).each do |message| %>
+      <div><%= message %></div>
+    <% end %>
+  </div>
+
+  <div>
+    <%=  form.label :subtitle %><br>
+    <%= form.text_field :subtitle %>
+    <% song.errors.full_messages_for(:subtitle).each do |message| %>
+      <div><%= message %></div>
+    <% end %>
+  </div>
+
+  <div>
+    <%= form.label :artist %><br>
+    <%= form.text_field :artist %>
+    <% song.errors.full_messages_for(:artist).each do |message| %>
+      <div><%= message %></div>
+    <% end %>
+  </div>
+
+  <div>
+    <%=  form.label :body %><br>
+    <%= form.text_area :body %>
+    <% song.errors.full_messages_for(:body).each do |message| %>
+      <div><%= message %></div>
+    <% end %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

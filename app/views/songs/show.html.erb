@@ -1,0 +1,16 @@
+<h1><%= @song.header %></h1>
+<% if @song.subtitle.present? %>
+  <h2><%= @song.subtitle %></h1>
+<% end %>
+
+<p>
+<%= @song.body %>
+</p>
+
+<ul>
+  <li><%= link_to "Edit", edit_song_path(@song) %></li>
+  <li><%= link_to "Destroy", song_path(@song), data: {
+                    turbo_method: :delete,
+                    turbo_confirm: "Are you sure?"
+                  } %></li>
+</ul>
