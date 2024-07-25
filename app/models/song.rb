@@ -20,6 +20,18 @@ class Song < ApplicationRecord
     Chordpro.html(body)
   end
 
+  def update(params)
+    parsed = Chordpro::parse(params[:body])
+    metadata = parsed.metadata.to_h
+
+    params[:title] = metadata["title"]
+    params[:subtitle] = metadata["subtitle"]
+    params[:artist] = metadata["artist"]
+
+    super(params)
+  end
+
+
   def chordpro
     "{title: #{title}}
 {subtitle: #{subtitle}}
