@@ -1,0 +1,13 @@
+.chords, .environment-title, .comment {
+	font-weight: bold;
+}
+
+.song {
+	white-space: nowrap;
+}
+
+.environment-title {
+	color: blue;
+}
+
+

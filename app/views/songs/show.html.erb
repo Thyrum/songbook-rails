@@ -3,9 +3,9 @@
   <h3><%= @song.subtitle %></h3>
 <% end %>
 
-<p>
-<%= @song.html.html_safe %>
-</p>
+<div class="song">
+  <%= @song.html.html_safe %>
+</div>
 
 <ul>
   <li><%= link_to "Edit", edit_song_path(@song) %></li>
