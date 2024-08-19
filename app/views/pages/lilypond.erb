@@ -1,0 +1,74 @@
+<h2>Lilypond</h2>
+
+<textarea id="lily-code"></textarea>
+<input type="button" onclick="update();" value="Submit">
+<div id="render"></div>
+<div id="message-count">0</div>
+
+<script>
+  const minimal = "\\version \"2.14.1\"\n\\include \"english.ly\"\n\n\\score {\n  \\new Staff {\n    \\key d \\major\n    \\numericTimeSignature\n    \\time 2/4\n    <cs' d'' b''>16 <cs' d'' b''>8.\n    %% Here: the tie on the D's looks funny\n    %% Too tall? Left-hand endpoint is not aligned with the B tie?\n    ~\n    <cs' d'' b''>8 [ <b d'' a''> ]\n  }\n}"
+
+  const codeElement = document.getElementById("lily-code");
+  codeElement.value = minimal;
+
+  let typeTimeout = null;
+  codeElement.addEventListener('keyup', function (e) {
+      clearTimeout(typeTimeout);
+
+      typeTimeout = setTimeout(function() {
+          update();
+      }, 3000);
+  });
+
+  let socket = new WebSocket("ws://localhost:2000");
+  socket.onopen = function(e) {
+      update();
+  };
+
+  const renderElement = document.getElementById("render");
+
+  let messageCount = 0;
+
+  socket.onmessage = function(event) {
+      messageCount += 1;
+      document.getElementById("message-count").innerHTML = messageCount;
+      const data = JSON.parse(event.data);
+      if ("result" in data && "files" in data.result && data.result.files.length > 0) {
+          render.innerHTML = "";
+          for (let file in data.result.files) {
+              let view = document.createElement("div");
+              view.innerHTML = data.result.files[file]
+              render.appendChild(view);
+          }
+      }
+  }
+
+  function update() {
+      const id = "id" + Math.random().toString(16).slice(2)
+      let message = {
+          params: {
+              backend: "svg",
+              crop: true,
+              src: codeElement.value,
+              version: "stable",
+          },
+          method: "render",
+          id: id,
+      };
+      
+      socket.send(JSON.stringify(message));
+  };
+
+  socket.onclose = function(event) {
+      if (event.wasClean) {
+          // Closed cleanly
+      } else {
+          // Closed abruptly
+      }
+  };
+
+  socket.onerror = function(error) {
+      // Errored
+      alert(`Got ${error}`)
+  };
+</script>
