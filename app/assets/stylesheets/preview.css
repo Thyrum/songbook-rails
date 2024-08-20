@@ -1,0 +1,48 @@
+svg {
+	background-color: white;
+}
+
+@font-face {
+	font-family: "emmentaler-11";
+	src: url("/fonts/emmentaler-11.otf") format("opentype");
+}
+
+@font-face {
+	font-family: "emmentaler-13";
+	src: url("/fonts/emmentaler-13.otf") format("opentype");
+}
+
+@font-face {
+	font-family: "emmentaler-14";
+	src: url("/fonts/emmentaler-14.otf") format("opentype");
+}
+
+@font-face {
+	font-family: "emmentaler-16";
+	src: url("/fonts/emmentaler-16.otf") format("opentype");
+}
+
+@font-face {
+	font-family: "emmentaler-18";
+	src: url("/fonts/emmentaler-18.otf") format("opentype");
+}
+
+@font-face {
+	font-family: "emmentaler-20";
+	src: url("/fonts/emmentaler-20.otf") format("opentype");
+}
+
+@font-face {
+	font-family: "emmentaler-23";
+	src: url("/fonts/emmentaler-23.otf") format("opentype");
+}
+
+@font-face {
+	font-family: "emmentaler-26";
+	src: url("/fonts/emmentaler-26.otf") format("opentype");
+}
+
+@font-face {
+	font-family: "emmentaler-brace";
+	src: url("/fonts/emmentaler-brace.otf") format("opentype");
+}
