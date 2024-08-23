@@ -17,7 +17,7 @@ class Song < ApplicationRecord
   end
 
   def html
-    Chordpro.html(body)
+    Chordpro.flexhtml(body).to_s
   end
 
   def update(params)

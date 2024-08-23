@@ -4,10 +4,30 @@
 
 .song {
 	white-space: nowrap;
+	line-height: 1.2;
+	font-family: sans;
 }
 
 .environment-title {
 	color: blue;
 }
 
+.line {
+	display: flex;
+	flex-wrap: nowrap;
+	/* margin-bottom: 0.1em; */
+}
 
+.part {
+	/* margin-bottom: -0.1em; */
+}
+
+.chord {
+	margin-bottom: -0.3em;
+	font-weight: bold;
+	font-family: sans;
+}
+
+.environment.chorus {
+	color: #CC0000;
+}

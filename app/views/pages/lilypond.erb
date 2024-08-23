@@ -1,9 +1,10 @@
 <h2>Lilypond</h2>
 
-<textarea id="lily-code"></textarea>
+<textarea id="lily-code" class="lily-code"></textarea>
 <input type="button" onclick="update();" value="Submit">
 <div id="render"></div>
-<div id="message-count">0</div>
+<b>Message count: </b><span id="message-count">0</span><br>
+<b>File count: </b><span id="file-count">0</span>
 
 <script>
   const minimal = "\\version \"2.14.1\"\n\\include \"english.ly\"\n\n\\score {\n  \\new Staff {\n    \\key d \\major\n    \\numericTimeSignature\n    \\time 2/4\n    <cs' d'' b''>16 <cs' d'' b''>8.\n    %% Here: the tie on the D's looks funny\n    %% Too tall? Left-hand endpoint is not aligned with the B tie?\n    ~\n    <cs' d'' b''>8 [ <b d'' a''> ]\n  }\n}"
@@ -17,7 +18,20 @@
 
       typeTimeout = setTimeout(function() {
           update();
-      }, 3000);
+      }, 2000);
+  });
+
+  codeElement.addEventListener('keydown', function(e) {
+      if (e.key == "Tab") {
+          e.preventDefault();
+
+          const start = this.selectionStart;
+          const end = this.selectionEnd;
+
+          this.value = this.value.substring(0,start) + "\t" + this.value.substring(end);
+
+          this.selectionStart = this.selectionEnd = start + 1;
+      }
   });
 
   let socket = new WebSocket("ws://localhost:2000");
@@ -34,12 +48,18 @@
       document.getElementById("message-count").innerHTML = messageCount;
       const data = JSON.parse(event.data);
       if ("result" in data && "files" in data.result && data.result.files.length > 0) {
-          render.innerHTML = "";
+          const fileCount = data.result.files.length;
+          document.getElementById("file-count").innerHTML = fileCount;
+          render.textContent = "";
           for (let file in data.result.files) {
               let view = document.createElement("div");
               view.innerHTML = data.result.files[file]
               render.appendChild(view);
           }
+      } else if ("result" in data && "err" in data.result) {
+          render.textContent = data.result.err
+      } else {
+          alert(event.data);
       }
   }
 
