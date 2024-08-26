@@ -10,30 +10,40 @@
 	} %></li>
 </ul>
 
+<script src="/abcjs-basic-min.js"></script>
+
 <script>
-	const lilypondElements = document.getElementsByClassName("lilypond");
-	var socket = new WebSocket("ws://localhost:2000");
+	window.lilypondElements = document.getElementsByClassName("ly");
+	window.extra_src = "\\paper {\n\tline-width=5.4\\in\n\tindent=0\\in\n}\n";
 
-	socket.onmessage = function(e) {
-		const data = JSON.parse(event.data);
-		const item = document.getElementById(data.id);
+	if (typeof window.socket === 'undefined' || window.socket.readyState === WebSocket.CLOSED) {
+		window.socket = new WebSocket("ws://localhost:2000");
 
-		if ("result" in data && "files" in data.result && data.result.files.length > 0) {
-			item.getElementsByClassName("code")[0].style="display: none;";
-			for (let file in data.result.files) {
-				let view = document.createElement("img");
-				view.src = "data:image/png;base64," + data.result.files[file];
-				view.onload = function() {
-					this.style = "width:" + 0.4*this.width + "px;";
+		socket.onmessage = function(e) {
+			const data = JSON.parse(event.data);
+			const item = document.getElementById(data.id);
+
+			if ("result" in data && "files" in data.result && data.result.files.length > 0) {
+				item.getElementsByClassName("code")[0].style="display: none;";
+				for (let file in data.result.files) {
+					let view = document.createElement("img");
+					view.src = "data:image/png;base64," + data.result.files[file];
+					view.onload = function() {
+						this.style = "width:" + 0.60*this.width + "px;";
+					}
+					item.appendChild(view);
 				}
-				item.appendChild(view);
 			}
 		}
+
+		socket.onopen = function(e) {
+			sendLilypond();
+		}
+	} else {
+		sendLilypond();
 	}
 
-	const extra_src = "\\paper {\n\tline-width=5.4\\in\n\tindent=0\\in\n}\n";
-
-	socket.onopen = function(e) {
+	function sendLilypond() {
 		for (let i = 0; i < lilypondElements.length; i++) {
 			const item = lilypondElements.item(i);
 			item.id = "lilypond-" + i;
@@ -50,5 +60,25 @@
 			};
 			socket.send(JSON.stringify(message));
 		}
+	}
+
+	window.abcElements = document.getElementsByClassName("abc");
+
+	for (let i = 0; i < abcElements.length; i++) {
+		const item = abcElements.item(i);
+		item.id = "abc-" + i;
+		const code = item.getElementsByClassName("code")[0];
+		code.style="display: none;";
+		window.ABCJS.renderAbc(item.id, code.textContent, {
+			paddingbottom: 0,
+			paddingleft: 0,
+			paddingright: 0,
+			paddingtop: 0,
+			scale: 0.7,
+			selectTypes: false,
+		});
+		console.log("rendered");
+		console.log(code.textContent);
+		console.log(item.id);
 	}
 </script>

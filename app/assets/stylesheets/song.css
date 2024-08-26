@@ -5,7 +5,8 @@
 .song {
 	white-space: nowrap;
 	font-family: sans;
-	line-height: 1.2;
+	line-height: 1.25;
+	font-size: 14px;
 }
 
 .environment-title {
@@ -28,7 +29,7 @@
 	font-family: sans;
 }
 
-.environment.chorus {
+environment.chorus {
 	color: #CC0000;
 }
 
@@ -45,4 +46,10 @@
 	font-family: mono;
 	background-color: whitesmoke;
 	white-space: pre;
+}
+
+textarea#song_body {
+	width: 100%;
+	height: 60vh;
+	box-sizing: border-box;
 }
