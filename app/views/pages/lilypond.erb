@@ -52,8 +52,11 @@
           document.getElementById("file-count").innerHTML = fileCount;
           render.textContent = "";
           for (let file in data.result.files) {
-              let view = document.createElement("div");
-              view.innerHTML = data.result.files[file]
+              let view = document.createElement("img");
+              view.src = "data:image/png;base64," + data.result.files[file];
+              view.onload = function() {
+                this.style = "width:" + 0.5*this.width + "px;"
+              }
               render.appendChild(view);
           }
       } else if ("result" in data && "err" in data.result) {
@@ -67,7 +70,7 @@
       const id = "id" + Math.random().toString(16).slice(2)
       let message = {
           params: {
-              backend: "svg",
+              format: "png",
               crop: true,
               src: codeElement.value,
               version: "stable",

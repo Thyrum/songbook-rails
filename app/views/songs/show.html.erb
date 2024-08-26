@@ -1,11 +1,54 @@
 <div class="song">
-  <%= @song.html.html_safe %>
+	<%= @song.html.html_safe %>
 </div>
 
 <ul>
-  <li><%= link_to "Edit", edit_song_path(@song) %></li>
-  <li><%= link_to "Destroy", song_path(@song), data: {
-                    turbo_method: :delete,
-                    turbo_confirm: "Are you sure?"
-                  } %></li>
+	<li><%= link_to "Edit", edit_song_path(@song) %></li>
+	<li><%= link_to "Destroy", song_path(@song), data: {
+		turbo_method: :delete,
+		turbo_confirm: "Are you sure?"
+	} %></li>
 </ul>
+
+<script>
+	const lilypondElements = document.getElementsByClassName("lilypond");
+	var socket = new WebSocket("ws://localhost:2000");
+
+	socket.onmessage = function(e) {
+		const data = JSON.parse(event.data);
+		const item = document.getElementById(data.id);
+
+		if ("result" in data && "files" in data.result && data.result.files.length > 0) {
+			item.getElementsByClassName("code")[0].style="display: none;";
+			for (let file in data.result.files) {
+				let view = document.createElement("img");
+				view.src = "data:image/png;base64," + data.result.files[file];
+				view.onload = function() {
+					this.style = "width:" + 0.4*this.width + "px;";
+				}
+				item.appendChild(view);
+			}
+		}
+	}
+
+	const extra_src = "\\paper {\n\tline-width=5.4\\in\n\tindent=0\\in\n}\n";
+
+	socket.onopen = function(e) {
+		for (let i = 0; i < lilypondElements.length; i++) {
+			const item = lilypondElements.item(i);
+			item.id = "lilypond-" + i;
+
+			let message = {
+				params: {
+					format: "png",
+					crop: true,
+					src: extra_src + item.textContent,
+					version: "stable",
+				},
+				method: "render",
+				id: item.id,
+			};
+			socket.send(JSON.stringify(message));
+		}
+	}
+</script>

@@ -17,11 +17,20 @@ class Song < ApplicationRecord
   end
 
   def html
-    Chordpro.flexhtml(body).to_s
+    begin
+      Chordpro.flexhtml(body).to_s
+    rescue Parslet::ParseFailed => error
+      '<div style="white-space: pre;font-family: mono">' + error.parse_failure_cause.ascii_tree + '</div>'
+    end
   end
 
   def update(params)
-    parsed = Chordpro::parse(params[:body])
+    begin
+      parsed = Chordpro::parse(params[:body])
+    rescue Parslet::ParseFailed => error
+      puts(error.parse_failure_cause.ascii_tree)
+      return
+    end
     metadata = parsed.metadata.to_h
 
     params[:title] = metadata["title"]
